@@ -22,3 +22,9 @@ M_freq = Counting(M, Cols, values);
 
 % frequency table of benign tumors
 B_freq = Counting(B, Cols, values);
+
+% normalized malignant tumors
+M_norm = Normalize(M_freq);
+
+% normalized benign tumors
+B_norm = Normalize(B_freq);
