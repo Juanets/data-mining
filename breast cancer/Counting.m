@@ -13,6 +13,6 @@ function [A] = Counting( Matrix, Cols, values )
             h(i, j) = sum(Matrix(:, i) == values(j));       
         end
     end
-    A = [values h'];
+    A = h';
     
 end
