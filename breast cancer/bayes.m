@@ -7,6 +7,7 @@ prob_benign = Prob(Train, 11, 2);
 % delete the first column (ids)
 Train(:, 1) = [];
 Test(:, 1) = [];
+
 % vector of column numbers
 Cols = [1:10];
 
@@ -34,29 +35,26 @@ predict = zeros(length(Test),1);
 
 % calculate predictions
 for i = 1:length(Test)
-    prob_m = zeros(9,1)';
-    prob_b = zeros(9,1)';
+    col = 1:9;    
+    row = Test(i,col);
+    idx = sub2ind(size(M_norm), row, col);
+    
+    probs_m = M_norm(idx);
+    probs_b = B_norm(idx);
+    
+    is_malignant = prod(probs_m) * prob_malign;
+    is_benign = prod(probs_b) * prob_benign;
 
-    for j = 1:9
-        value = Test(i, j);
-        prob_m(j) = M_norm(value, j);
-        prob_b(j) = B_norm(value, j);        
-    end
-
-    malignant = prod(prob_m) * prob_malign;
-    benign = prod(prob_b) * prob_benign;
-
-    if benign > malignant
+    if is_benign > is_malignant
         predict(i) = 2;
     else
         predict(i) = 4;
     end
-
 end
 
 % test accuracy
 
 corrects = sum(Test(:,10) == predict);
-accuracy = (corrects * 100) / length(Test); 
+accuracy = (corrects * 100) / length(Test)
 
 % the model is 98% accurate
