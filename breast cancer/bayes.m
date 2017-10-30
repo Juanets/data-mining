@@ -1,15 +1,15 @@
 load('CasosTrainTest.mat');
 
-% probability that a tumor is malignant or benign
-prob_malign = Prob(Train, 11, 4);
-prob_benign = Prob(Train, 11, 2);
+% a priori probabilities
+priori_malign = Prob(Train, 11, 4);
+priori_benign = Prob(Train, 11, 2);
 
 % delete the first column (ids)
 Train(:, 1) = [];
 Test(:, 1) = [];
 
-% vector of column numbers
-Cols = [1:10];
+% column numbers
+Cols = 1:10;
 
 % unique values in the whole dataset
 values = unique(Train);
@@ -42,8 +42,8 @@ for i = 1:length(Test)
     probs_m = M_norm(idx);
     probs_b = B_norm(idx);
     
-    is_malignant = prod(probs_m) * prob_malign;
-    is_benign = prod(probs_b) * prob_benign;
+    is_malignant = prod(probs_m) * priori_malign;
+    is_benign = prod(probs_b) * priori_benign;
 
     if is_benign > is_malignant
         predict(i) = 2;
@@ -53,8 +53,13 @@ for i = 1:length(Test)
 end
 
 % test accuracy
-
 corrects = sum(Test(:,10) == predict);
 accuracy = (corrects * 100) / length(Test)
 
-% the model is 98% accurate
+% benign accuracy
+b_corrects = sum(predict(Test(:, 10) == 2) == 2);
+b_accuracy = b_corrects / sum(Test(:, 10) == 2) * 100
+
+% malignant accuracy
+m_corrects = sum(predict(Test(:, 10) == 4) == 4);
+m_accuracy = m_corrects / sum(Test(:, 10) == 4) * 100
